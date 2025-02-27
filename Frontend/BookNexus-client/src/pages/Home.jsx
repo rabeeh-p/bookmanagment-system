@@ -1,6 +1,8 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    
+    const navigate = useNavigate('')
 
 
     return (
@@ -17,12 +19,12 @@ const Home = () => {
             <p className="text-gray-400 mb-4">
               Create and manage your book collection with ease.
             </p>
-            <Link
-              to="/books"
+            <h6
+            onClick={()=>navigate('/books')}
               className="bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold inline-block hover:bg-[#2563EB] transition"
             >
               View Books →
-            </Link>
+            </h6>
           </div>
       
           {/* Reading Lists Section */}
@@ -31,12 +33,13 @@ const Home = () => {
             <p className="text-gray-400 mb-4">
               Organize your books into custom reading lists.
             </p>
-            <Link
-              to="/readingList"
+            <h6
+            onClick={()=>navigate('/readingList')}
+              
               className="bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold inline-block hover:bg-[#2563EB] transition"
             >
               Reading List →
-            </Link>
+            </h6>
             {/* Uncomment and use `user` state for authentication-based rendering */}
             {/* {user ? (
               <Link
