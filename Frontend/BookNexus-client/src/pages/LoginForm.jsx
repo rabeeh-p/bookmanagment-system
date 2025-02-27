@@ -59,8 +59,8 @@ const LoginForm = () => {
 
                 if (response.data.access) {
                     console.log('Login successful', response.data);
-                    localStorage.setItem('access_token', response.data.access_token);
-                    localStorage.setItem('refresh_token', response.data.refresh_token);
+                    localStorage.setItem('access_token', response.data.access);
+                    localStorage.setItem('refresh_token', response.data.refresh);
                     navigate('/')
 
                 } else {
