@@ -29,9 +29,8 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let formErrors = { ...errors };
-        setServerError(''); // Reset server error
+        setServerError('');  
 
-        // Validation logic
         if (!formData.username) {
             formErrors.username = 'Username is required';
         } else {
@@ -46,16 +45,14 @@ const LoginForm = () => {
 
         setErrors(formErrors);
 
-        // If there are no errors, submit the form
         if (!formErrors.username && !formErrors.password) {
-            setIsSubmitting(true); // Disable the submit button during the submission process
+            setIsSubmitting(true);  
             try {
                 const dataToSubmit = {
                     username: formData.username,
                     password: formData.password,
                 };
 
-                // Axios POST request to submit the login data to your backend API
                 const response = await axios.post('http://127.0.0.1:8000/login/', dataToSubmit);
                 console.log(response.data,'dataaa');
                 
