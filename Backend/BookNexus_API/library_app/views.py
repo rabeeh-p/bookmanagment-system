@@ -2,7 +2,7 @@ from django.shortcuts import render
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import UserRegistrationSerializer
+from .serializers import *
 from django.contrib.auth import authenticate
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -47,3 +47,12 @@ class LoginView(APIView):
             return Response({
                 'detail': 'Invalid credentials'
             }, status=status.HTTP_401_UNAUTHORIZED)
+
+
+class BookListAPIView(APIView):
+    def get(self, request):
+        books = Book.objects.all()
+        
+        serializer = BookSerializer(books, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 # user_app/serializers.py
 from django.contrib.auth.models import User
+from . models import *
 from rest_framework import serializers
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
@@ -23,3 +24,9 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         
         user = User.objects.create_user(**validated_data)
         return user
+
+
+class BookSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Book
+        fields = ['id', 'title', 'authors', 'genre', 'publication_date', 'description', 'uploaded_by']
