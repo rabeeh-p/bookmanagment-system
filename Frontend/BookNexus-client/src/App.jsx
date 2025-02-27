@@ -5,6 +5,7 @@ import Home from './pages/Home';
 import Navbar from './components/Navbar';
 import Books from './pages/Books';
 import ReadingLists from './pages/ReadingLists';
+import RegistrationForm from './pages/RegistrationForm';
 
 
 function App() {
@@ -17,6 +18,8 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/books" element={<Books />} />
           <Route path="/readingList" element={<ReadingLists />} />
+
+          <Route path="/register" element={<RegistrationForm />} />
         </Routes>
       </div>
     </Router>
