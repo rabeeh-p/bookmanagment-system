@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Books from './pages/Books';
 import ReadingLists from './pages/ReadingLists';
 import RegistrationForm from './pages/RegistrationForm';
+import LoginForm from './pages/LoginForm';
 
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/readingList" element={<ReadingLists />} />
 
           <Route path="/register" element={<RegistrationForm />} />
+          <Route path="/login" element={<LoginForm />} />
         </Routes>
       </div>
     </Router>
