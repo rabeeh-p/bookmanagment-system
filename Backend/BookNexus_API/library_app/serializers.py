@@ -30,3 +30,11 @@ class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
         fields = ['id', 'title', 'authors', 'genre', 'publication_date', 'description', 'uploaded_by']
+
+
+class ReadingListSerializer(serializers.ModelSerializer):
+    books = BookSerializer(many=True)  # This will include the book details
+
+    class Meta:
+        model = ReadingList
+        fields = ['id', 'name', 'books', 'created_at']
