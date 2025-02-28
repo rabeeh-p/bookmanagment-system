@@ -23,27 +23,27 @@ const ReadingLists = () => {
             }
         };
         fetchReadingLists();
-    }, [token]);
+    }, [token, readingLists,]);
 
-   
- 
+
+
     const handleCreateList = async (e) => {
         e.preventDefault();
-    
+
         const trimmedName = newList.trim();
-        
+
         const letterCount = (trimmedName.match(/[a-zA-Z]/g) || []).length;
-    
+
         if (!trimmedName || letterCount < 3) {
             Swal.fire({
                 icon: "error",
                 title: "Invalid Name",
                 text: "Reading list name must contain at least 3 letters!",
-                confirmButtonColor: "#FFD700", 
+                confirmButtonColor: "#FFD700",
             });
             return;
         }
-    
+
         try {
             const response = await axios.post(
                 'http://127.0.0.1:8000/api/reading-list/',
@@ -56,7 +56,7 @@ const ReadingLists = () => {
                 icon: "success",
                 title: "Success",
                 text: "Reading list created successfully!",
-                confirmButtonColor: "#FFD700", 
+                confirmButtonColor: "#FFD700",
             });
         } catch (error) {
             console.error("Error creating reading list.", error);
@@ -64,12 +64,12 @@ const ReadingLists = () => {
                 icon: "error",
                 title: "Error",
                 text: "Failed to create reading list. Try again!",
-                confirmButtonColor: "#FFD700", 
+                confirmButtonColor: "#FFD700",
             });
         }
     };
-    
-    
+
+
 
     const handleRemoveReadingList = async (listId) => {
         const confirmDelete = await Swal.fire({
@@ -81,7 +81,7 @@ const ReadingLists = () => {
             cancelButtonColor: "#3085d6",
             confirmButtonText: "Yes, delete it!",
         });
-    
+
         if (confirmDelete.isConfirmed) {
             try {
                 const response = await axios.delete('http://127.0.0.1:8000/api/reading-list/', {
@@ -90,13 +90,13 @@ const ReadingLists = () => {
                     },
                     data: { reading_list_id: listId },
                 });
-    
+
                 if (response.status === 204) {
                     await Swal.fire({
                         title: "Deleted!",
                         text: "Your reading list has been removed.",
                         icon: "success",
-                        confirmButtonColor: "#FFD700",   
+                        confirmButtonColor: "#FFD700",
                     });
                     setReadingLists((prevLists) => prevLists.filter((list) => list.id !== listId));
                 }
@@ -106,7 +106,7 @@ const ReadingLists = () => {
             }
         }
     };
-    
+
     const handleRemoveBookFromList = async (listId, bookId) => {
         const confirmRemove = await Swal.fire({
             title: "Remove book?",
@@ -117,7 +117,7 @@ const ReadingLists = () => {
             cancelButtonColor: "#3085d6",
             confirmButtonText: "Yes, remove it!",
         });
-    
+
         if (confirmRemove.isConfirmed) {
             try {
                 const response = await axios.delete('http://127.0.0.1:8000/api/reading-list/', {
@@ -126,13 +126,13 @@ const ReadingLists = () => {
                     },
                     data: { reading_list_id: listId, book_id: bookId },
                 });
-    
+
                 if (response.status === 200) {
                     await Swal.fire({
                         title: "Deleted!",
                         text: "Your reading list has been removed.",
                         icon: "success",
-                        confirmButtonColor: "#FFD700",   
+                        confirmButtonColor: "#FFD700",
                     });
                     setReadingLists((prevLists) =>
                         prevLists.map((list) =>
@@ -148,9 +148,9 @@ const ReadingLists = () => {
             }
         }
     };
-    
-    
-    
+
+
+
 
     const handleAddBookToList = async (listId, bookId) => {
         try {
@@ -196,7 +196,6 @@ const ReadingLists = () => {
                     ) : (
                         readingLists.map((list) => (
                             <div key={list.id} className="bg-gray-800 p-4 rounded-lg border border-gray-700 mb-4 relative">
-                                {/* Remove Reading List Button */}
                                 <button
                                     onClick={() => handleRemoveReadingList(list.id)}
                                     className="absolute top-2 right-2 text-red-500 hover:text-red-700"
@@ -212,7 +211,6 @@ const ReadingLists = () => {
                                         list.books.map((book) => (
                                             <div key={book.id} className="flex justify-between items-center text-gray-300">
                                                 <p>{book.title} by {book.authors}</p>
-                                                {/* Remove Book from List Button */}
                                                 <button
                                                     onClick={() => handleRemoveBookFromList(list.id, book.id)}
                                                     className="text-red-500 hover:text-red-700"
@@ -224,21 +222,34 @@ const ReadingLists = () => {
                                     )}
                                 </div>
 
-                                {/* Add Book to List Dropdown */}
                                 <select
                                     className="w-full bg-gray-800 border border-gray-600 text-white rounded-lg p-2 mt-2"
-                                    onChange={(e) => handleAddBookToList(list.id, e.target.value)}
+                                    onChange={(e) => {
+                                        if (e.target.value) {
+                                            handleAddBookToList(list.id, e.target.value);
+                                            e.target.value = "";  
+                                        }
+                                    }}
                                     defaultValue=""
                                 >
-                                    <option value="" disabled>
-                                        Add a book to this list
-                                    </option>
-                                    {unreadBooks.map((book) => (
-                                        <option key={book.id} value={book.id} className="text-black">
-                                            {book.title} by {book.authors}
+                                    {unreadBooks.length > 0 ? (
+                                        <>
+                                            <option value="" disabled>
+                                                Add a book to this list
+                                            </option>
+                                            {unreadBooks.map((book) => (
+                                                <option key={book.id} value={book.id} className="text-black">
+                                                    {book.title} by {book.authors}
+                                                </option>
+                                            ))}
+                                        </>
+                                    ) : (
+                                        <option value="" disabled>
+                                            No books available
                                         </option>
-                                    ))}
+                                    )}
                                 </select>
+
                             </div>
                         ))
                     )}

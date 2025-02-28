@@ -40,22 +40,7 @@ const Home = () => {
             >
               Reading List →
             </h6>
-            {/* Uncomment and use `user` state for authentication-based rendering */}
-            {/* {user ? (
-              <Link
-                to="/reading-lists"
-                className="bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold inline-block hover:bg-[#2563EB] transition"
-              >
-                View Lists →
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="bg-[#3B82F6] text-white px-4 py-2 rounded-lg font-bold inline-block hover:bg-[#2563EB] transition"
-              >
-                Login to Create Lists →
-              </Link>
-            )} */}
+            
           </div>
         </div>
       </div>

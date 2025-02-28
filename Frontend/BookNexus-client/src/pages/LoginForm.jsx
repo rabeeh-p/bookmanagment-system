@@ -29,7 +29,7 @@ const LoginForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         let formErrors = { ...errors };
-        setServerError('');  
+        setServerError('');
 
         if (!formData.username) {
             formErrors.username = 'Username is required';
@@ -46,7 +46,7 @@ const LoginForm = () => {
         setErrors(formErrors);
 
         if (!formErrors.username && !formErrors.password) {
-            setIsSubmitting(true);  
+            setIsSubmitting(true);
             try {
                 const dataToSubmit = {
                     username: formData.username,
@@ -54,8 +54,8 @@ const LoginForm = () => {
                 };
 
                 const response = await axios.post('http://127.0.0.1:8000/login/', dataToSubmit);
-                console.log(response.data,'dataaa');
-                
+                console.log(response.data, 'dataaa');
+
 
                 if (response.data.access) {
                     console.log('Login successful', response.data);
@@ -70,39 +70,40 @@ const LoginForm = () => {
                 setServerError('An error occurred, please try again!');
                 console.error('Error submitting form:', error);
             } finally {
-                setIsSubmitting(false);  
+                setIsSubmitting(false);
             }
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen ">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-white text-2xl text-center mb-6">Login</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-1">
-                        <label htmlFor="username" className="text-white text-sm">Username or Email</label>
+        
+        <div className="flex justify-center items-center min-h-screen b">
+            <div className="bg-gray-800 bg-opacity-80 backdrop-blur-lg p-8 rounded-2xl shadow-xl w-full max-w-md border border-gray-700">
+                <h2 className="text-white text-3xl font-semibold text-center mb-6">Welcome Back</h2>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="relative">
                         <input
                             type="text"
                             id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-3 bg-gray-700 bg-opacity-50 text-white rounded-md border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md placeholder-gray-400 transition duration-200"
+                            placeholder="Username or Email"
                             required
                         />
                         {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="password" className="text-white text-sm">Password</label>
+                    <div className="relative">
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="w-full p-3 bg-gray-700 bg-opacity-50 text-white rounded-md border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md placeholder-gray-400 transition duration-200"
+                            placeholder="Password"
                             required
                         />
                         {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
@@ -110,16 +111,21 @@ const LoginForm = () => {
 
                     {serverError && <p className="text-red-500 text-xs mt-2">{serverError}</p>}
 
-                    <button 
-                        type="submit" 
-                        className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-lg shadow-lg hover:from-blue-600 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200"
                         disabled={isSubmitting}
                     >
                         {isSubmitting ? 'Logging in...' : 'Login'}
                     </button>
+
+                    <p className="text-center text-gray-400 text-sm">
+                        Don't have an account? <a href="/register" className="text-blue-400 hover:underline">Sign up</a>
+                    </p>
                 </form>
             </div>
         </div>
+
     );
 };
 

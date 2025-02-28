@@ -15,7 +15,7 @@ const BooksGallery = () => {
               Authorization: `Bearer ${token}`,
             },
           });
-          setBooks(response.data); // Set the fetched books data
+          setBooks(response.data);  
         } else {
           console.log('No token found in localStorage');
         }

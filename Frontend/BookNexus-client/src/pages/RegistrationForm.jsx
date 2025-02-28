@@ -1,14 +1,18 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const RegistrationForm = () => {
+    const navigate = useNavigate();
+
     const [formData, setFormData] = useState({
         username: '',
         email: '',
         firstName: '',
         lastName: '',
         password: '',
-        passwordConfirmation: '',  
+        passwordConfirmation: '',
     });
 
     const [errors, setErrors] = useState({
@@ -17,24 +21,29 @@ const RegistrationForm = () => {
         firstName: '',
         lastName: '',
         password: '',
-        passwordConfirmation: '',  
+        passwordConfirmation: '',
     });
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [serverError, setServerError] = useState('');
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData({
-            ...formData,
-            [name]: value,
-        });
+
+        if (name === 'username' && /\s/.test(value)) {
+            setErrors(prev => ({ ...prev, username: 'No spaces allowed' }));
+        } else if ((name === 'firstName' || name === 'lastName') && /[^a-zA-Z]/.test(value)) {
+            setErrors(prev => ({ ...prev, [name]: 'Only letters allowed' }));
+        } else {
+            setErrors(prev => ({ ...prev, [name]: '' }));
+        }
+
+        setFormData(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
         let formErrors = { ...errors };
-        setServerError('');  
 
         if (formData.password !== formData.passwordConfirmation) {
             formErrors.passwordConfirmation = 'Passwords do not match';
@@ -44,137 +53,168 @@ const RegistrationForm = () => {
 
         setErrors(formErrors);
 
-        if (!formErrors.username && !formErrors.password && !formErrors.passwordConfirmation) {
-            setIsSubmitting(true);  
+        if (!Object.values(formErrors).some(err => err)) {
+            setIsSubmitting(true);
+
             try {
-                const dataToSubmit = {
+                const response = await axios.post('http://127.0.0.1:8000/register/', {
                     username: formData.username,
                     email: formData.email,
                     password: formData.password,
-                    password_confirmation: formData.passwordConfirmation,  
+                    password_confirmation: formData.passwordConfirmation,
                     first_name: formData.firstName,
                     last_name: formData.lastName,
-                };
-                console.log(dataToSubmit,'submitt');
-                
+                });
 
-                const response = await axios.post('http://127.0.0.1:8000/register/', dataToSubmit);
-                
                 if (response.data.message === 'User registered successfully.') {
-                    console.log('Registration successful', response.data);
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration Successful!',
+                        text: 'You can now log in.',
+                        confirmButtonColor: '#FFD700',
+                        timer: 2000,
+                        showConfirmButton: true,
+                    });
+                    navigate('/login');
                 } else {
-                    setServerError('Registration failed, please try again!');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed!',
+                        text: 'Please try again.',
+                        confirmButtonColor: '#FFD700',
+                    });
                 }
             } catch (error) {
-                setServerError('An error occurred, please try again!');
-                console.error('Error submitting form:', error);
+                if (error.response && error.response.data.errors) {
+                    const errors = error.response.data.errors;
+                    let errorMessage = Object.values(errors).join("\n");
+
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Registration Failed!',
+                        text: errorMessage,
+                        confirmButtonColor: '#FFD700',
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error!',
+                        text: 'An unexpected error occurred. Please try again!',
+                        confirmButtonColor: '#FFD700',
+                    });
+                }
+
+                console.log('Registration error:', error);
             } finally {
-                setIsSubmitting(false);  
+                setIsSubmitting(false);
             }
+
         }
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen">
-            <div className="bg-gray-800 p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-white text-2xl text-center mb-6">Registration Form</h2>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="space-y-1">
-                        <label htmlFor="username" className="text-white text-sm">Username</label>
+
+        <div className="flex justify-center items-center min-h-screen ">
+            <div className="bg-gray-800 bg-opacity-90 p-8 rounded-2xl shadow-2xl w-full max-w-md">
+                <h2 className="text-white text-3xl text-center font-semibold mb-6">Create an Account</h2>
+
+                <form onSubmit={handleSubmit} className="space-y-5">
+
+                    <div className="relative">
                         <input
                             type="text"
                             id="username"
                             name="username"
                             value={formData.username}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Username"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-user"></i></span>
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="email" className="text-white text-sm">Email</label>
+                    <div className="relative">
                         <input
                             type="email"
                             id="email"
                             name="email"
                             value={formData.email}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Email Address"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.email && <p className="text-red-500 text-xs mt-1">{errors.email}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-envelope"></i></span>
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="firstName" className="text-white text-sm">First Name</label>
+                    <div className="relative">
                         <input
                             type="text"
                             id="firstName"
                             name="firstName"
                             value={formData.firstName}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="First Name"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.firstName && <p className="text-red-500 text-xs mt-1">{errors.firstName}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-id-card"></i></span>
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="lastName" className="text-white text-sm">Last Name</label>
+                    <div className="relative">
                         <input
                             type="text"
                             id="lastName"
                             name="lastName"
                             value={formData.lastName}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Last Name"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.lastName && <p className="text-red-500 text-xs mt-1">{errors.lastName}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-id-card"></i></span>
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="password" className="text-white text-sm">Password</label>
+                    <div className="relative">
                         <input
                             type="password"
                             id="password"
                             name="password"
                             value={formData.password}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Password"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.password && <p className="text-red-500 text-xs mt-1">{errors.password}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-lock"></i></span>
                     </div>
 
-                    <div className="space-y-1">
-                        <label htmlFor="passwordConfirmation" className="text-white text-sm">Confirm Password</label>
+                    <div className="relative">
                         <input
                             type="password"
                             id="passwordConfirmation"
                             name="passwordConfirmation"
                             value={formData.passwordConfirmation}
                             onChange={handleChange}
-                            className="w-full p-3 bg-gray-700 text-white rounded-md border border-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="Confirm Password"
+                            className="w-full p-3 pl-10 bg-gray-700 text-white rounded-lg border border-gray-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                             required
                         />
-                        {errors.passwordConfirmation && <p className="text-red-500 text-xs mt-1">{errors.passwordConfirmation}</p>}
+                        <span className="absolute left-3 top-3 text-gray-400"><i className="fas fa-lock"></i></span>
                     </div>
 
-                    {serverError && <p className="text-red-500 text-xs mt-2">{serverError}</p>}
-
-                    <button 
-                        type="submit" 
-                        className="w-full py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    <button
+                        type="submit"
+                        className="w-full py-3 bg-yellow-500 text-gray-900 font-semibold rounded-lg hover:bg-yellow-600 focus:outline-none focus:ring-2 focus:ring-yellow-500 transition duration-300"
                         disabled={isSubmitting}
                     >
-                        {isSubmitting ? 'Submitting...' : 'Register'}
+                        {isSubmitting ? 'Registering...' : 'Sign Up'}
                     </button>
                 </form>
             </div>
         </div>
+
     );
 };
 
