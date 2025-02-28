@@ -13,9 +13,11 @@
     "axios": "^1.8.1",
     "bootstrap": "^5.3.3",
     "eslint-visitor-keys": "^3.4.1",
+    "lucide-react": "^0.476.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^6.29.0"
+    "react-router-dom": "^6.29.0",
+    "sweetalert2": "^11.17.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.21.0",
