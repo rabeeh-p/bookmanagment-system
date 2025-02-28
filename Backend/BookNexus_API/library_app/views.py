@@ -8,6 +8,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.shortcuts import get_object_or_404
 
 
 class UserRegistrationAPIView(APIView):
@@ -81,7 +82,7 @@ class UserReadingListAPIView(APIView):
   
 
     def get(self, request, *args, **kwargs):
-        reading_lists = ReadingList.objects.filter(user=request.user)
+        reading_lists = ReadingList.objects.filter(user=request.user).order_by("-created_at")
 
         all_books = Book.objects.all()
 
@@ -98,3 +99,52 @@ class UserReadingListAPIView(APIView):
         }
 
         return Response(data)
+    
+
+   
+    def post(self, request, *args, **kwargs):
+        name = request.data.get("name")
+        if not name:
+            return Response({"error": "Name is required"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        reading_list = ReadingList.objects.create(user=request.user, name=name)
+        return Response(ReadingListSerializer(reading_list).data, status=status.HTTP_201_CREATED)
+
+    def put(self, request, *args, **kwargs):
+        """Add books to an existing reading list."""
+        reading_list_id = request.data.get("reading_list_id")
+        book_ids = request.data.get("book_ids", [])
+
+        if not reading_list_id:
+            return Response({"error": "Reading list ID is required"}, status=status.HTTP_400_BAD_REQUEST)
+
+        reading_list = get_object_or_404(ReadingList, id=reading_list_id, user=request.user)
+        
+        books = Book.objects.filter(id__in=book_ids)
+        if not books.exists():
+            return Response({"error": "No valid books found"}, status=status.HTTP_400_BAD_REQUEST)
+
+        reading_list.books.add(*books)
+        return Response(ReadingListSerializer(reading_list).data, status=status.HTTP_200_OK)
+    
+
+    def delete(self, request, *args, **kwargs):
+
+        reading_list_id = request.data.get("reading_list_id")
+        book_id = request.data.get("book_id")   
+
+        reading_list = get_object_or_404(ReadingList, id=reading_list_id, user=request.user)
+
+        if book_id:
+            book = get_object_or_404(Book, id=book_id)
+            reading_list.books.remove(book)
+            return Response(
+                {"message": "Book removed from reading list"},
+                status=status.HTTP_200_OK
+            )
+        
+        reading_list.delete()
+        return Response(
+            {"message": "Reading list deleted successfully"},
+            status=status.HTTP_204_NO_CONTENT
+        )
