@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 
 class Book(models.Model):
     title = models.CharField(max_length=255)
-    authors = models.CharField(max_length=255)  # Can store multiple authors as a string
+    authors = models.CharField(max_length=255)  
     genre = models.CharField(max_length=100)
     publication_date = models.DateField()
     description = models.TextField(blank=True, null=True)

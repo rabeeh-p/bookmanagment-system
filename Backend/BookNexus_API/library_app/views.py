@@ -11,10 +11,13 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.shortcuts import get_object_or_404
 
 
+
+
 class UserRegistrationAPIView(APIView):
     def post(self, request, *args, **kwargs):
+
         serializer = UserRegistrationSerializer(data=request.data)
-        
+
         if serializer.is_valid():
             user = serializer.save()
             return Response({
@@ -26,9 +29,16 @@ class UserRegistrationAPIView(APIView):
                     "last_name": user.last_name
                 }
             }, status=status.HTTP_201_CREATED)
-        
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
+
+
+        error_messages = serializer.errors
+        print(error_messages,'msge')
+        return Response({
+            "message": "Registration failed.",
+            "errors": error_messages
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
 
 class LoginView(APIView):
 
@@ -62,6 +72,7 @@ class BookListAPIView(APIView):
         serializer = BookSerializer(books, many=True)
         
         return Response(serializer.data, status=status.HTTP_200_OK)
+
 
     def post(self, request):
         request.data['uploaded_by'] = request.user.id
@@ -111,7 +122,6 @@ class UserReadingListAPIView(APIView):
         return Response(ReadingListSerializer(reading_list).data, status=status.HTTP_201_CREATED)
 
     def put(self, request, *args, **kwargs):
-        """Add books to an existing reading list."""
         reading_list_id = request.data.get("reading_list_id")
         book_ids = request.data.get("book_ids", [])
 
@@ -148,3 +158,51 @@ class UserReadingListAPIView(APIView):
             {"message": "Reading list deleted successfully"},
             status=status.HTTP_204_NO_CONTENT
         )
+    
+
+
+
+class ProfileAPIView(APIView):
+    permission_classes = [IsAuthenticated]  
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        serializer = UserSerializer(user)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request):
+        user = request.user
+        serializer = UserSerializer(user, data=request.data, partial=True)
+        
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+
+class UserBooksAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        books = Book.objects.filter(uploaded_by=request.user)
+        serializer = BookSerializer(books, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def put(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id, uploaded_by=request.user)
+        serializer = BookSerializer(book, data=request.data, partial=True)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, book_id):
+        book = get_object_or_404(Book, id=book_id, uploaded_by=request.user)
+        book.delete()
+        return Response({"message": "Book deleted successfully"}, status=status.HTTP_204_NO_CONTENT)

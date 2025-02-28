@@ -3,28 +3,25 @@ from django.contrib.auth.models import User
 from . models import *
 from rest_framework import serializers
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True)
-    password_confirmation = serializers.CharField(write_only=True)
-    
-    first_name = serializers.CharField(max_length=30)
-    last_name = serializers.CharField(max_length=30)
 
+
+class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['username', 'email', 'password', 'password_confirmation', 'first_name', 'last_name']
-    
+        fields = ['username', 'email', 'password', 'first_name', 'last_name']
+        extra_kwargs = {'password': {'write_only': True}}
+
     def validate(self, data):
-        if data['password'] != data['password_confirmation']:
-            raise serializers.ValidationError("Passwords do not match.")
+        """Check if username or email already exists."""
+        if User.objects.filter(username=data.get("username")).exists():
+            raise serializers.ValidationError({"username": "This username is already taken."})
+        if User.objects.filter(email=data.get("email")).exists():
+            raise serializers.ValidationError({"email": "This email is already registered."})
         return data
 
     def create(self, validated_data):
-        validated_data.pop('password_confirmation')
-        
-        user = User.objects.create_user(**validated_data)
-        return user
-
+        """Create and return a new user."""
+        return User.objects.create_user(**validated_data)
 
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
@@ -33,8 +30,16 @@ class BookSerializer(serializers.ModelSerializer):
 
 
 class ReadingListSerializer(serializers.ModelSerializer):
-    books = BookSerializer(many=True)  # This will include the book details
+    books = BookSerializer(many=True)   
 
     class Meta:
         model = ReadingList
         fields = ['id', 'name', 'books', 'created_at']
+
+
+
+
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'first_name', 'last_name']
