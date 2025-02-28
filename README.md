@@ -65,19 +65,19 @@ The backend exposes the following endpoints:
 ### Authentication
 | Method | Endpoint | Description |
 |--------|---------|-------------|
-| POST | `/api/auth/register/` | Register a new user |
-| POST | `/api/auth/login/` | Authenticate a user and return a token |
-| GET | `/api/auth/profile/` | Retrieve logged-in user profile |
-| PUT | `/api/auth/profile/` | Update user profile |
+| POST | `/register/` | Register a new user |
+| POST | `/login/` | Authenticate a user and return a token |
+| GET | `/profile/` | Retrieve logged-in user profile |
+| PUT | `/profile/` | Update user profile |
 
 ### Books
 | Method | Endpoint | Description |
 |--------|---------|-------------|
-| GET | `/api/books/` | Retrieve all books |
-| POST | `/api/books/` | Add a new book (Authenticated users) |
-| GET | `/api/books/{id}/` | Retrieve book details |
-| PUT | `/api/books/{id}/` | Update book details (Authenticated users) |
-| DELETE | `/api/books/{id}/` | Remove a book (Authenticated users) |
+| GET | `/books/` | Retrieve all books |
+| POST | `/books/` | Add a new book (Authenticated users) |
+| GET | `/books/{id}/` | Retrieve book details |
+| PUT | `/books/{id}/` | Update book details (Authenticated users) |
+| DELETE | `/books/{id}/` | Remove a book (Authenticated users) |
 
 ### Reading Lists
 | Method | Endpoint | Description |
@@ -87,32 +87,12 @@ The backend exposes the following endpoints:
 | PUT | `/api/reading-lists/{id}/` | Update a reading list |
 | DELETE | `/api/reading-lists/{id}/` | Delete a reading list |
 
-### Book Interactions
-| Method | Endpoint | Description |
-|--------|---------|-------------|
-| POST | `/api/reading-lists/{id}/add-book/` | Add a book to a reading list |
-| DELETE | `/api/reading-lists/{id}/remove-book/` | Remove a book from a reading list |
 
 ---
 
-## Environment Variables
-Create a `.env` file in the project directory and add:
-```env
-SECRET_KEY=your_secret_key
-DEBUG=True
-DATABASE_URL=your_database_url
-ALLOWED_HOSTS=localhost,127.0.0.1
-```
-
----
-
-## License
-This project is licensed under the MIT License.
-
----
 
 ### Author
-**Rabeeh** - Backend (Django REST Framework)
+**Rabeeh p** - Fullstack Developer 
 
 Happy Coding! 🚀
 
