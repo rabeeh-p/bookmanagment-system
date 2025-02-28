@@ -10,8 +10,8 @@ This project is a Django REST API for managing books, users, and reading lists. 
 - [Backend Setup](#backend-setup)
 - [Running the Project](#running-the-project)
 - [API Documentation](#api-documentation)
-- [Environment Variables](#environment-variables)
-- [License](#license)
+
+
 
 ---
 
@@ -26,8 +26,8 @@ To run this project locally, ensure you have the following dependencies installe
 ## Backend Setup
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/BookManagementAPI.git
-   cd BookManagementAPI
+   git clone https://github.com/rabeeh-p/bookmanagment-system/
+   cd Backend
    ```
 2. Create a virtual environment:
    ```bash
