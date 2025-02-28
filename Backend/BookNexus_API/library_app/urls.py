@@ -13,3 +13,5 @@ urlpatterns = [
     path('user/books/', UserBooksAPIView.as_view(), name='user-books'),
     path('user/books/<int:book_id>/', UserBooksAPIView.as_view(), name='user-book-detail'),
 ]
+
+
