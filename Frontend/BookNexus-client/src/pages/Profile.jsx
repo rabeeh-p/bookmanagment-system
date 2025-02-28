@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
+import { handleLogout } from "../utils/authUtil"; 
 
 const Profile = () => {
     const navigate = useNavigate()
@@ -31,6 +32,12 @@ const Profile = () => {
                 setLoading(false);
             })
             .catch(error => {
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);  
+                } else {
+                    console.error('Error fetching books:', error);
+                
                 Swal.fire({
                     icon: 'error',
                     title: 'Error!',
@@ -38,6 +45,7 @@ const Profile = () => {
                     confirmButtonColor: '#FFD700'  
                 });
                 setLoading(false);
+            }
             });
     }, []);
 

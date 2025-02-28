@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
+import { handleLogout } from "../utils/authUtil"; 
+import { useNavigate } from 'react-router-dom';
 const BooksGallery = () => {
+  const navigate= useNavigate()
   const [books, setBooks] = useState([]);
 
   useEffect(() => {
@@ -20,7 +22,12 @@ const BooksGallery = () => {
           console.log('No token found in localStorage');
         }
       } catch (error) {
-        console.error('Error fetching books:', error);
+        if (error.response && error.response.status === 401) {
+          console.error('Unauthorized access - logging out');
+          handleLogout(navigate);   
+      } else {
+          console.error('Error fetching books:', error);
+      }
       }
     };
     fetchBooks();

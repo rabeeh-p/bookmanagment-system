@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 import { useNavigate } from "react-router-dom";
-
+import { handleLogout } from "../utils/authUtil"; 
 const EditProfile = () => {
+    
     const navigate = useNavigate()
     const [user, setUser] = useState({
         username: "",
@@ -37,6 +38,12 @@ const EditProfile = () => {
                 setLoading(false);
             })
             .catch(error => {
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);  
+                } else {
+                    console.error('Error fetching books:', error);
+              
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
@@ -44,6 +51,7 @@ const EditProfile = () => {
                     confirmButtonColor: "#FFD700",
                 });
                 setLoading(false);
+            }
             });
     }, []);
 
@@ -80,6 +88,12 @@ const EditProfile = () => {
             },
         })
             .then(response => {
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);  
+                } else {
+                    console.error('Error fetching books:', error);
+                
                 Swal.fire({
                     icon: "success",
                     title: "Success!",
@@ -87,6 +101,7 @@ const EditProfile = () => {
                     confirmButtonColor: "#FFD700",
                 });
                 navigate('/profile')
+            }
                 
             })
             .catch(error => {

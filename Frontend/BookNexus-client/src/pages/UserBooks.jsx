@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { FiEdit, FiTrash } from 'react-icons/fi';
 import Swal from 'sweetalert2';
+import { handleLogout } from "../utils/authUtil"; 
+import { useNavigate } from 'react-router-dom';
 
 const UserBooks = () => {
+  const navigate= useNavigate()
   const [books, setBooks] = useState([]);
   const [editingBook, setEditingBook] = useState(null);
   const [newBookData, setNewBookData] = useState({ title: '', authors: '', genre: '', publication_date: '', description: '' });
@@ -77,12 +80,19 @@ const UserBooks = () => {
           
         } catch (error) {
         //   Swal.fire('Error!', 'Failed to delete book.', 'error');
+        if (error.response && error.response.status === 401) {
+            console.error('Unauthorized access - logging out');
+            handleLogout(navigate);  
+        } else {
+            console.error('Error fetching books:', error);
+        
         Swal.fire({
             title: 'Error!',
             text: 'Failed to delete book.',
             icon: 'error',
             confirmButtonColor: '#FFD700' // Yellow color
           });
+        }
           
         }
       }

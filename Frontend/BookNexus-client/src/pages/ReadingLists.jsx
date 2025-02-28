@@ -2,8 +2,11 @@ import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Trash2 } from 'lucide-react';
 import Swal from "sweetalert2";
+import { handleLogout } from "../utils/authUtil"; 
+import { useNavigate } from 'react-router-dom';
 
 const ReadingLists = () => {
+    const navigate= useNavigate()
     const [readingLists, setReadingLists] = useState([]);
     const [unreadBooks, setUnreadBooks] = useState([]);
     const [newList, setNewList] = useState('');
@@ -19,7 +22,13 @@ const ReadingLists = () => {
                 setReadingLists(response.data.reading_lists);
                 setUnreadBooks(response.data.unread_books);
             } catch (error) {
-                console.error('Error fetching reading lists.', error);
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);   
+                } else {
+                    console.error('Error fetching books:', error);
+                }
+                
             }
         };
         fetchReadingLists();
@@ -59,6 +68,12 @@ const ReadingLists = () => {
                 confirmButtonColor: "#FFD700",
             });
         } catch (error) {
+            if (error.response && error.response.status === 401) {
+                console.error('Unauthorized access - logging out');
+                handleLogout(navigate);   
+            } else {
+                console.error('Error fetching books:', error);
+           
             console.error("Error creating reading list.", error);
             Swal.fire({
                 icon: "error",
@@ -66,6 +81,7 @@ const ReadingLists = () => {
                 text: "Failed to create reading list. Try again!",
                 confirmButtonColor: "#FFD700",
             });
+        }
         }
     };
 
@@ -101,8 +117,15 @@ const ReadingLists = () => {
                     setReadingLists((prevLists) => prevLists.filter((list) => list.id !== listId));
                 }
             } catch (error) {
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);   
+                } else {
+                    console.error('Error fetching books:', error);
+                
                 console.error("Error removing reading list:", error);
                 Swal.fire("Error!", error.response?.data?.error || "Failed to remove reading list.", "error");
+                }
             }
         }
     };
@@ -166,7 +189,12 @@ const ReadingLists = () => {
             );
             setUnreadBooks((prevBooks) => prevBooks.filter((book) => book.id !== bookId));
         } catch (error) {
-            console.error('Error adding book to list.', error);
+            if (error.response && error.response.status === 401) {
+                console.error('Unauthorized access - logging out');
+                handleLogout(navigate);  
+            } else {
+                console.error('Error fetching books:', error);
+            }
         }
     };
 

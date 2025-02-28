@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Swal from "sweetalert2";
+import { handleLogout } from "../utils/authUtil"; 
 
 const Books = () => {
+  const navigate= useNavigate()
   const [books, setBooks] = useState([]);
   const [newBook, setNewBook] = useState({
     title: '',
@@ -33,7 +35,13 @@ useEffect(() => {
           console.log('No token found in localStorage');
         }
       } catch (error) {
-        console.error('Error fetching books:', error);
+        if (error.response && error.response.status === 401) {
+          console.error('Unauthorized access - logging out');
+          handleLogout(navigate);  
+      } else {
+          console.error('Error fetching books:', error);
+      }
+        
       }
     };
     fetchBooks();
@@ -41,79 +49,6 @@ useEffect(() => {
 
  
 
-//   const handleAddBook = async (e) => {
-//     e.preventDefault();
-
-//     if (!newBook || typeof newBook !== 'object') {
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Validation Error',
-//             text: 'Invalid form data. Please try again.',
-//             confirmButtonColor: '#FFD700'
-//         });
-//         return;
-//     }
-
-//     const { title = '', authors = '', genre = '', publication_date = '', description = '' } = newBook;
-
-//     if (!title.trim() || !authors.trim() || !genre.trim() || !publication_date.trim() || !description.trim()) {
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Validation Error',
-//             text: 'All fields are required!',
-//             confirmButtonColor: '#FFD700'
-//         });
-//         return;
-//     }
-
-//     try {
-//         const token = localStorage.getItem('access_token');
-
-//         if (!token) {
-//             Swal.fire({
-//                 icon: 'warning',
-//                 title: 'Unauthorized',
-//                 text: 'No token found, please log in.',
-//                 confirmButtonColor: '#FFD700'
-//             });
-//             return;
-//         }
-
-//         const response = await axios.post('http://localhost:8000/books/', newBook, {
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`,
-//             },
-//         });
-
-//         setBooks([response.data, ...books]);
-
-//         Swal.fire({
-//             icon: 'success',
-//             title: 'Book Added!',
-//             text: 'Your book has been added successfully.',
-//             confirmButtonColor: '#FFD700'
-//         });
-
-//         setNewBook({
-//             title: '',
-//             author: '',
-//             genre: '',
-//             publication_date: '',
-//             description: '',
-//         });
-
-//     } catch (error) {
-//         console.error('Error adding book:', error);
-
-//         Swal.fire({
-//             icon: 'error',
-//             title: 'Error',
-//             text: 'Failed to add book. Please try again later.',
-//             confirmButtonColor: '#FFD700'
-//         });
-//     }
-// };
 
 const handleAddBook = async (e) => {
   e.preventDefault();
@@ -140,11 +75,11 @@ const handleAddBook = async (e) => {
       return;
   }
 
-  // Convert input date to a valid Date object
+ 
   const selectedDate = new Date(publication_date);
   const today = new Date();
 
-  // Ensure the selected date is not in the future
+ 
   if (selectedDate > today) {
       Swal.fire({
           icon: 'error',
@@ -193,7 +128,12 @@ const handleAddBook = async (e) => {
       });
 
   } catch (error) {
-      console.error('Error adding book:', error);
+    if (error.response && error.response.status === 401) {
+      console.error('Unauthorized access - logging out');
+      handleLogout(navigate);   
+  } else {
+      console.error('Error fetching books:', error);
+
 
       Swal.fire({
           icon: 'error',
@@ -201,6 +141,7 @@ const handleAddBook = async (e) => {
           text: 'Failed to add book. Please try again later.',
           confirmButtonColor: '#FFD700'
       });
+    }
   }
 };
 
