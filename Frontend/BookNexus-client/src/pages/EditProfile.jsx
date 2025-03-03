@@ -88,11 +88,7 @@ const EditProfile = () => {
             },
         })
             .then(response => {
-                if (error.response && error.response.status === 401) {
-                    console.error('Unauthorized access - logging out');
-                    handleLogout(navigate);  
-                } else {
-                    console.error('Error fetching books:', error);
+                
                 
                 Swal.fire({
                     icon: "success",
@@ -101,16 +97,24 @@ const EditProfile = () => {
                     confirmButtonColor: "#FFD700",
                 });
                 navigate('/profile')
-            }
+            
                 
             })
             .catch(error => {
+                if (error.response && error.response.status === 401) {
+                    console.error('Unauthorized access - logging out');
+                    handleLogout(navigate);  
+                } else {
+                    console.error('Error fetching books:', error);
+                console.log(error,'err');
+                
                 Swal.fire({
                     icon: "error",
                     title: "Error!",
                     text: "Failed to update profile.",
                     confirmButtonColor: "#FFD700",
                 });
+                }
             });
     };
 

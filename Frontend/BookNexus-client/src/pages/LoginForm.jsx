@@ -89,11 +89,17 @@ const LoginForm = () => {
                             value={formData.username}
                             onChange={handleChange}
                             className="w-full p-3 bg-gray-700 bg-opacity-50 text-white rounded-md border border-transparent focus:border-blue-400 focus:ring-2 focus:ring-blue-500 focus:outline-none shadow-md placeholder-gray-400 transition duration-200"
-                            placeholder="Username or Email"
+                            placeholder="Username"
                             required
+
+
+
                         />
                         {errors.username && <p className="text-red-500 text-xs mt-1">{errors.username}</p>}
                     </div>
+
+
+
 
                     <div className="relative">
                         <input
