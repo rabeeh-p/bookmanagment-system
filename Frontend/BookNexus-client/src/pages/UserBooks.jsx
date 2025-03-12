@@ -39,11 +39,6 @@ const UserBooks = () => {
   };
 
 
-
-
-
-
-
   
   const handleUpdateBook = async () => {
     try {
@@ -87,7 +82,9 @@ const UserBooks = () => {
             icon: 'success',
             confirmButtonColor: '#FFD700'
           });
-          
+
+
+
         } catch (error) {
         //   Swal.fire('Error!', 'Failed to delete book.', 'error');
         if (error.response && error.response.status === 401) {
@@ -100,7 +97,7 @@ const UserBooks = () => {
             title: 'Error!',
             text: 'Failed to delete book.',
             icon: 'error',
-            confirmButtonColor: '#FFD700' // Yellow color
+            confirmButtonColor: '#FFD700'  
           });
         }
           
@@ -108,6 +105,8 @@ const UserBooks = () => {
       }
     });
   };
+
+
 
   return (
     <div className="container mx-auto px-4 py-8 min-h-screen">

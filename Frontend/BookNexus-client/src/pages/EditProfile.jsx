@@ -54,9 +54,16 @@ const EditProfile = () => {
             }
             });
     }, []);
+    const sanitizeInput = (value) => {
+        return value.replace(/[<>/"'`\\]/g, "");
+    };
 
+    // const handleChange = (e) => {
+    //     setUser({ ...user, [e.target.name]: e.target.value });
+    // };
     const handleChange = (e) => {
-        setUser({ ...user, [e.target.name]: e.target.value });
+        const sanitizedValue = sanitizeInput(e.target.value);
+        setUser({ ...user, [e.target.name]: sanitizedValue });
     };
 
     const validateInput = () => {
@@ -73,6 +80,7 @@ const EditProfile = () => {
         }
         return true;
     };
+    
 
     const handleSubmit = (e) => {
         e.preventDefault();
