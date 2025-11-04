@@ -59,9 +59,7 @@ class BookListAPIView(APIView):
 
     def get(self, request):
         books = Book.objects.all()
-        
         serializer = BookSerializer(books, many=True)
-        
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -84,17 +82,12 @@ class UserReadingListAPIView(APIView):
   
 
     def get(self, request, *args, **kwargs):
-        reading_lists = ReadingList.objects.filter(user=request.user).order_by("-created_at")
-
+        reading_lists = ReadingList.objects.filter(user=request.user)
         all_books = Book.objects.all()
-
         reading_list_serializer = ReadingListSerializer(reading_lists, many=True)
-
         added_books_ids = [book.id for list in reading_lists for book in list.books.all()]
         unread_books = all_books.exclude(id__in=added_books_ids)
-
         unread_books_serializer = BookSerializer(unread_books, many=True)
-
         data = {
             "reading_lists": reading_list_serializer.data,
             "unread_books": unread_books_serializer.data,   
@@ -102,13 +95,10 @@ class UserReadingListAPIView(APIView):
 
         return Response(data)
     
-
-   
     def post(self, request, *args, **kwargs):
         name = request.data.get("name")
         if not name:
             return Response({"error": "Name is required"}, status=status.HTTP_400_BAD_REQUEST)
-        
         reading_list = ReadingList.objects.create(user=request.user, name=name)
         return Response(ReadingListSerializer(reading_list).data, status=status.HTTP_201_CREATED)
 
