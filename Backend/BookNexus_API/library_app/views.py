@@ -140,9 +140,6 @@ class UserReadingListAPIView(APIView):
             status=status.HTTP_204_NO_CONTENT
         )
     
-
-
-
 class ProfileAPIView(APIView):
     permission_classes = [IsAuthenticated]  
     authentication_classes = [JWTAuthentication]
@@ -161,11 +158,6 @@ class ProfileAPIView(APIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
-
-
 
 
 class UserBooksAPIView(APIView):
