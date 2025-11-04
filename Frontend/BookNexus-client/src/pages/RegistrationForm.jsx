@@ -26,19 +26,27 @@ const RegistrationForm = () => {
 
     const [isSubmitting, setIsSubmitting] = useState(false);
 
+  
+
     const handleChange = (e) => {
         const { name, value } = e.target;
-
-        if (name === 'username' && /\s/.test(value)) {
+    
+        const sanitizedValue = value.replace(/[<>]/g, '');
+    
+        if (name === 'username' && /\s/.test(sanitizedValue)) {
             setErrors(prev => ({ ...prev, username: 'No spaces allowed' }));
-        } else if ((name === 'firstName' || name === 'lastName') && /[^a-zA-Z]/.test(value)) {
+        } 
+        else if ((name === 'firstName' || name === 'lastName') && /[^a-zA-Z]/.test(sanitizedValue)) {
             setErrors(prev => ({ ...prev, [name]: 'Only letters allowed' }));
-        } else {
+        } 
+        else {
             setErrors(prev => ({ ...prev, [name]: '' }));
         }
-
-        setFormData(prev => ({ ...prev, [name]: value }));
+    
+        setFormData(prev => ({ ...prev, [name]: sanitizedValue }));
     };
+    
+    
 
     const handleSubmit = async (e) => {
         e.preventDefault();

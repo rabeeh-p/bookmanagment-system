@@ -11,15 +11,13 @@ This project is a Django REST API for managing books, users, and reading lists. 
 - [Running the Project](#running-the-project)
 - [API Documentation](#api-documentation)
 
-
-
 ---
 
 ## Installation
 To run this project locally, ensure you have the following dependencies installed:
 - Python (>= 3.8)
 - Django REST Framework
-- PostgreSQL or SQLite
+- SQLite
 
 ---
 
@@ -32,7 +30,7 @@ To run this project locally, ensure you have the following dependencies installe
 2. Create a virtual environment:
    ```bash
    python -m venv venv
-   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   source venv/bin/activate   
    ```
 3. Install dependencies:
    ```bash

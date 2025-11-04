@@ -10,7 +10,8 @@ const EditProfile = () => {
         username: "",
         email: "",
         first_name: "",
-        last_name: ""
+        last_name: "",
+        profile:''
     });
     const [loading, setLoading] = useState(true);
 
@@ -84,6 +85,8 @@ const EditProfile = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
+        console.log(user.profile,'profile');
+        
 
         if (!validateInput()) return;
 
@@ -135,6 +138,8 @@ const EditProfile = () => {
             <div className="w-full max-w-md bg-gray-900 text-white rounded-lg shadow-md p-6">
                 <h2 className="text-2xl font-semibold text-center mb-4">Edit Profile</h2>
                 <form onSubmit={handleSubmit} className="space-y-4">
+                    <label htmlFor="">Profile</label>
+                    <input type="file" name="profile" id="" value= {user.profile} onClick={handleChange} />
                     <div>
                         <label className="block text-gray-400">Username:</label>
                         <input type="text" name="username" value={user.username} onChange={handleChange} required 

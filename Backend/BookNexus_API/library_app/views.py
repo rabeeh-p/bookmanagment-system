@@ -15,9 +15,7 @@ from django.shortcuts import get_object_or_404
 
 class UserRegistrationAPIView(APIView):
     def post(self, request, *args, **kwargs):
-
         serializer = UserRegistrationSerializer(data=request.data)
-
         if serializer.is_valid():
             user = serializer.save()
             return Response({
@@ -29,8 +27,6 @@ class UserRegistrationAPIView(APIView):
                     "last_name": user.last_name
                 }
             }, status=status.HTTP_201_CREATED)
-
-
         error_messages = serializer.errors
         print(error_messages,'msge')
         return Response({
@@ -38,20 +34,15 @@ class UserRegistrationAPIView(APIView):
             "errors": error_messages
         }, status=status.HTTP_400_BAD_REQUEST)
 
-
-
 class LoginView(APIView):
 
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
         password = request.data.get('password')
-        
         user = authenticate(username=username, password=password)
-        
         if user is not None:
             refresh = RefreshToken.for_user(user)
             access_token = refresh.access_token
-
             return Response({
                 'refresh': str(refresh),
                 'access': str(access_token),

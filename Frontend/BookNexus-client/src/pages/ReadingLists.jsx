@@ -32,7 +32,7 @@ const ReadingLists = () => {
             }
         };
         fetchReadingLists();
-    }, [token, readingLists,]);
+    }, [token, navigate,]);
 
 
 
@@ -114,6 +114,8 @@ const ReadingLists = () => {
                         icon: "success",
                         confirmButtonColor: "#FFD700",
                     });
+                    window.location.reload();
+
                     setReadingLists((prevLists) => prevLists.filter((list) => list.id !== listId));
                 }
             } catch (error) {
@@ -157,6 +159,8 @@ const ReadingLists = () => {
                         icon: "success",
                         confirmButtonColor: "#FFD700",
                     });
+                    window.location.reload();
+
                     setReadingLists((prevLists) =>
                         prevLists.map((list) =>
                             list.id === listId
@@ -182,6 +186,8 @@ const ReadingLists = () => {
                 { reading_list_id: listId, book_ids: [bookId] },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
+            window.location.reload();
+
             setReadingLists((prevLists) =>
                 prevLists.map((list) =>
                     list.id === listId ? { ...list, books: response.data.books } : list
