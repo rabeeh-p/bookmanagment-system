@@ -182,3 +182,9 @@ class UserBooksAPIView(APIView):
         book = get_object_or_404(Book, id=book_id, uploaded_by=request.user)
         book.delete()
         return Response({"message": "Book deleted successfully"}, status=status.HTTP_204_NO_CONTENT)
+
+
+
+        
+
+        
