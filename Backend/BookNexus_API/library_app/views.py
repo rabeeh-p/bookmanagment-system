@@ -35,7 +35,7 @@ class UserRegistrationAPIView(APIView):
         }, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# login view
 class LoginView(APIView):
     def post(self, request, *args, **kwargs):
         username = request.data.get('username')
