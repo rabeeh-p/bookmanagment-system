@@ -12,7 +12,7 @@ from django.shortcuts import get_object_or_404
 
 
 
-
+# registeration
 class UserRegistrationAPIView(APIView):
     def post(self, request, *args, **kwargs):
         serializer = UserRegistrationSerializer(data=request.data)
