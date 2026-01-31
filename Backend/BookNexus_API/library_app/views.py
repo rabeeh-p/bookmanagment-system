@@ -63,7 +63,6 @@ class BookListAPIView(APIView):
         serializer = BookSerializer(books, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
-
     def post(self, request):
         request.data['uploaded_by'] = request.user.id
         serializer = BookSerializer(data=request.data)
@@ -72,15 +71,10 @@ class BookListAPIView(APIView):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-
-
 
 class UserReadingListAPIView(APIView):
     permission_classes = [IsAuthenticated]   
     authentication_classes = [JWTAuthentication]
-
-  
 
     def get(self, request, *args, **kwargs):
         reading_lists = ReadingList.objects.filter(user=request.user)
